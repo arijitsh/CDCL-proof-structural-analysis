@@ -3,11 +3,13 @@
 #include <algorithm>
 #include <cmath>
 #include <set>
+#include <iostream>
 
 // PUBLIC
 
 void ParamComputation::computeCVR(double& cvr, long long numClauses, long long numVars) {
 	cvr = numClauses / static_cast<double>(numVars);
+	std::cout << "c [paramComputation] CVR: " << cvr << " n: " << numVars << " m: " << numClauses << std::endl;
 }
 
 void ParamComputation::computeResolvable(
@@ -67,7 +69,7 @@ void ParamComputation::computeLiteralClauseLookupTable(
 		for (unsigned int c_i = 0; c_i < clauses[i].size(); ++c_i) {
 			const int var = clauses[i][c_i];
 			if (var > 0) { // The variable should never be zero
-				posClauseIndices[+var - 1].emplace_back(i);	
+				posClauseIndices[+var - 1].emplace_back(i);
 			} else {
 				negClauseIndices[-var - 1].emplace_back(i);
 			}
@@ -86,7 +88,7 @@ void ParamComputation::forEachResolvable(
 	for (long long i = 0; i < numVariables; ++i) {
 		const std::vector<unsigned int>& posClauses = posClauseIndices[i];
 		const std::vector<unsigned int>& negClauses = negClauseIndices[i];
-		
+
 		// Check for clauses which resolve on the variable
 		// O((max_degree(v))^2 k log(k))
 		for (unsigned int c_i : posClauses) {
@@ -120,14 +122,14 @@ void ParamComputation::forEachResolvable(
 					}
 				}
 
-				// Execute callback if resolvable 
+				// Execute callback if resolvable
 				if (resolvable) callback(tmpNumMergeable, posClause, negClause);
 			}
 		}
 	}
 }
 
-// O((max_degree(v))^2 k^2 log(k) + (m k)) 
+// O((max_degree(v))^2 k^2 log(k) + (m k))
 void ParamComputation::computeResolvable(
 	ResolvabilityMergeabilityOutput* resolvabilityMergeabilityOutput,
 	const std::vector<std::vector<long long>>& clauses,
