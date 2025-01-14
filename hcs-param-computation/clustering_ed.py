@@ -141,6 +141,7 @@ def update_output_data(
     post_width_data[len(
         path)-1].append(str(pmi.getPostResolutionClauseWidth()))
     cvr_data[len(path)-1].append(str(pmi.getCVR()))
+    print(f"c [clusterinEd] cvr: {pmi.getCVR()}")
     return
 
 
@@ -223,8 +224,8 @@ if __name__ == "__main__":
 
     # Load the clauses
     clauses, m, n = read_file(file)
-    print("n: {0}".format(n))
-    print("m: {0}".format(m))
+    print("c [clusteringEd.py] n: {0}".format(n))
+    print("c [clusteringEd.py] m: {0}".format(m))
     edge_set = cnf_to_edge_set(clauses)
     edge_list = [list(e) for e in edge_set]
 

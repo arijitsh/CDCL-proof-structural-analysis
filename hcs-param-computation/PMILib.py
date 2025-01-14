@@ -1,5 +1,15 @@
 import ctypes
+import os
+import sys
+import select
+
 lib = ctypes.CDLL('./libmergeability.so')
+sys.stdout.write(' \b')
+
+# check if we have more to read from the pipe
+
+
+
 
 # An object for working with the C/C++ library
 class PMI(object):
@@ -24,6 +34,7 @@ class PMI(object):
 		arr = (ctypes.c_longlong * len(clauses))(*clauses)
 		lib.PMI_setClauses.argtypes = [ ctypes.c_void_p, ctypes.c_longlong * len(clauses), ctypes.c_longlong ]
 		lib.PMI_setClauses(self.obj, arr, len(clauses))
+		# print("c [PMILib.py] Clauses: ", clauses.count(0))
 
 	def calculate(self, varSet, clauseFilterMode = 0):
 		"""
@@ -34,7 +45,9 @@ class PMI(object):
 			1: Copy the subset of each clause which occurs in the variable set
 		"""
 		arr = (ctypes.c_longlong * len(varSet))(*varSet)
+		# print("c [PMILib.py] varSet: ", len(varSet) - 1)
 		lib.PMI_calculate.argtypes = [ ctypes.c_void_p, ctypes.c_longlong * len(varSet), ctypes.c_int ]
+
 		lib.PMI_calculate(self.obj, arr, clauseFilterMode)
 
 	def calculateMergeability(self, varSet):
@@ -44,7 +57,9 @@ class PMI(object):
 	def getCVR(self):
 		""" Get the clause-variable ratio of the clause subset """
 		lib.PMI_getCVR.argtypes = [ ctypes.c_void_p ]
+		# print("c [PMILib.py] CVR: ", lib.PMI_getCVR(self.obj))
 		return lib.PMI_getCVR(self.obj)
+
 
 	def getMergeability(self):
 		""" Get the total number of overlapping literals in resolvable clause pairs """

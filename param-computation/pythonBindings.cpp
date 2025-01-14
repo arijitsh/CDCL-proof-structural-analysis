@@ -1,6 +1,7 @@
 #include "src/paramComputation.h"
 #include "src/PythonMergeabilityInterface.h"
 #include <iostream>
+#include <fstream>
 
 extern "C" {
 	PythonMergeabilityInterface* PMI_init() {
@@ -12,6 +13,7 @@ extern "C" {
 	}
 
 	void PMI_setClauses(PythonMergeabilityInterface* interface, long long* pyClauses, long long size) {
+		std::cout << "c [PythonBindings.cpp] Setting clauses " << size << std::endl;
 		interface->initializeClauses(pyClauses, size);
 	}
 
