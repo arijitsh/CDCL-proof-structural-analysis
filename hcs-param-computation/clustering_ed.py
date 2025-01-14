@@ -175,7 +175,7 @@ def compute_hierarchical_community_structure(
         vertex_clustering) + 0.5) / 1.5, "modularity")
 
     # Calculate instance parameters
-    pmi.calculate(get_vertex_set(g), 1)
+    pmi.calculate(get_vertex_set(g), 0)
 
     # Update output according to calculated parameters
     update_output_data(

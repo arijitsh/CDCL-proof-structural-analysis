@@ -28,6 +28,13 @@ extern "C" {
 
 	// Get the clause-variable ratio
 	double PMI_getCVR(PythonMergeabilityInterface* interface) {
+		std::ofstream outFile("file.txt");
+		if (outFile.is_open()) {
+			outFile << "CVR: " << interface->getCVR() << std::endl;
+			outFile.close();
+		} else {
+			std::cerr << "Unable to open file for writing" << std::endl;
+		}
 		return interface->getCVR();
 	}
 

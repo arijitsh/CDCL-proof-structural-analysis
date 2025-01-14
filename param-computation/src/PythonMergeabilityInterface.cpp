@@ -12,8 +12,10 @@ void PythonMergeabilityInterface::initializeClauses(long long* pyClauses, long l
 	m_numVariables = 0;
 	m_dirtyLookupTable = true;
 	m_clauses.clear();
+        // Make sure to flush the buffer
 
 	// Read and store input
+	std::cout << "c [PythonMergeabilityInterface] Reading clauses  xx" << std::endl;
 	_convertPyClausesToCpp(pyClauses, size);
 }
 
@@ -202,6 +204,8 @@ void PythonMergeabilityInterface::_getLookupTablesForVarSet (
 	m_output.cvr = m_numClauses / static_cast<double>(vars.size());
 	m_numVariables = vars.size();
 	std::cout << "n: " << m_numVariables << "\n" << "m: " << m_numClauses << std::endl;
+	std::exit(0);
+
 }
 
 void PythonMergeabilityInterface::_copyClausesForVarSet(
