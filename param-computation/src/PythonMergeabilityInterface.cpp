@@ -15,7 +15,6 @@ void PythonMergeabilityInterface::initializeClauses(long long* pyClauses, long l
         // Make sure to flush the buffer
 
 	// Read and store input
-	std::cout << "c [PythonMergeabilityInterface] Reading clauses  xx" << std::endl;
 	_convertPyClausesToCpp(pyClauses, size);
 }
 
@@ -39,7 +38,6 @@ void PythonMergeabilityInterface::calculateMergeabilityScore(long long* pyVarSet
 
 	std::vector<std::vector<long long>> clausesCopy;
 	std::vector<std::vector<long long>>* clauses = NULL;
-	std::cout << "c [PythonMergeabilityInterface] Clause filter mode: " << clauseFilterMode << std::endl;
 	switch (clauseFilterMode) {
 		case 0: {
 			_getLookupTablesForVarSet(posClauseIndices, negClauseIndices, varSet);
@@ -66,7 +64,6 @@ void PythonMergeabilityInterface::calculateMergeabilityScore(long long* pyVarSet
 }
 
 double PythonMergeabilityInterface::getCVR() {
-	// std::cout << "c [PythonMergeabilityInterface] CVR: " << m_output.cvr << " n: " << m_numVariables << " m: " << m_numClauses << std::endl;
 	return m_output.cvr;
 }
 
@@ -184,15 +181,12 @@ void PythonMergeabilityInterface::_getLookupTablesForVarSet (
 	}
 
 	// Calculate CVR over the clause subset
-	std::cout << "c [PythonMergeabilityInterface] Calculating CVR (case 0): " << m_numClauses << " n: " << vars.size() << std::endl;
 
 	if (!vars.empty()) {
 		auto minVar = *std::min_element(vars.begin(), vars.end());
 		auto maxVar = *std::max_element(vars.begin(), vars.end());
 
-		std::cout << "c [PythonMergeabilityInterface] Min var: " << minVar << " Max var: " << maxVar << std::endl;
 
-		std::cout << "c [PythonMergeabilityInterface] Missing vars: ";
 		for (long long var = minVar; var <= maxVar; ++var) {
 			if (vars.find(var) == vars.end()) {
 				std::cout << var << " ";
@@ -204,7 +198,6 @@ void PythonMergeabilityInterface::_getLookupTablesForVarSet (
 	m_output.cvr = m_numClauses / static_cast<double>(vars.size());
 	m_numVariables = vars.size();
 	std::cout << "n: " << m_numVariables << "\n" << "m: " << m_numClauses << std::endl;
-	std::exit(0);
 
 }
 
@@ -234,7 +227,6 @@ void PythonMergeabilityInterface::_copyClausesForVarSet(
 	}
 
 	m_numClauses = clausesCopy.size();
-	std::cout << "c [PythonMergeabilityInterface] Calculating CVR (case 1): " << m_numClauses << " n: " << vars.size() << std::endl;
 
 	m_output.cvr = m_numClauses / static_cast<double>(vars.size());
 }

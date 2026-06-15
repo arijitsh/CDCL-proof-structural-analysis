@@ -11,6 +11,7 @@ import warnings
 import pdb
 # pdb.set_trace()
 # warnings.filterwarnings("error")
+layer_id = 0
 
 
 def write_data(outfile, extension, data):
@@ -141,7 +142,6 @@ def update_output_data(
     post_width_data[len(
         path)-1].append(str(pmi.getPostResolutionClauseWidth()))
     cvr_data[len(path)-1].append(str(pmi.getCVR()))
-    print(f"c [clusterinEd] cvr: {pmi.getCVR()}")
     return
 
 
@@ -162,8 +162,11 @@ def compute_hierarchical_community_structure(
         g, hierarchical_tree, current_node, path, pmi,
         mergeability1norm1_data, mergeability1norm2_data, mergeability2norm1_data, mergeability2norm2_data,
         modularity_data, degree_data, community_size_data, inter_edges_data, inter_vars_data,
-        pre_width_data, post_width_data, cvr_data, output_directory
+        pre_width_data, post_width_data, cvr_data, output_directory, layer
 ):
+    if layer >= 2:
+        return
+
     # Calculate community structure
     vertex_clustering = g.community_multilevel()
 
@@ -175,7 +178,7 @@ def compute_hierarchical_community_structure(
         vertex_clustering) + 0.5) / 1.5, "modularity")
 
     # Calculate instance parameters
-    pmi.calculate(get_vertex_set(g), 0)
+    pmi.calculate(get_vertex_set(g), 1)
 
     # Update output according to calculated parameters
     update_output_data(
@@ -196,7 +199,8 @@ def compute_hierarchical_community_structure(
     set_hierarchy_tree_color(hierarchical_tree, current_node,
                              pmi.getMergeabilityScore1Norm1() / 0.5, "mergeability")
 
-    if False:
+    # if not one_level_calc:
+    if True:
         # Modify hierarchical community structure tree
         hierarchical_tree.add_vertices(len(vertex_clustering))
         hierarchical_tree.add_edges(create_edge_list_hierarchical_tree(
@@ -204,6 +208,7 @@ def compute_hierarchical_community_structure(
 
         # Uniquely enumerate each vertex in the current subtree
         current_max_node = hierarchical_tree.vcount() - 1
+
         for c in range(len(vertex_clustering)):
             current_node = current_max_node - (len(vertex_clustering) - c - 1)
             temp_path = path[:]
@@ -213,8 +218,10 @@ def compute_hierarchical_community_structure(
                     c), hierarchical_tree, current_node, temp_path, pmi,
                 mergeability1norm1_data, mergeability1norm2_data, mergeability2norm1_data, mergeability2norm2_data,
                 modularity_data, degree_data, community_size_data, inter_edges_data, inter_vars_data,
-                pre_width_data, post_width_data, cvr_data, output_directory
+                pre_width_data, post_width_data, cvr_data, output_directory, layer + 1
             )
+
+
     return
 
 
@@ -224,8 +231,8 @@ if __name__ == "__main__":
 
     # Load the clauses
     clauses, m, n = read_file(file)
-    print("c [clusteringEd.py] n: {0}".format(n))
-    print("c [clusteringEd.py] m: {0}".format(m))
+    print("n: {0}".format(n))
+    print("m: {0}".format(m))
     edge_set = cnf_to_edge_set(clauses)
     edge_list = [list(e) for e in edge_set]
 
@@ -265,7 +272,7 @@ if __name__ == "__main__":
         g, hierarchical_tree, current_node, path, pmi,
         mergeability1norm1_data, mergeability1norm2_data, mergeability2norm1_data, mergeability2norm2_data,
         modularity_data, degree_data, community_size_data, inter_edges_data, inter_vars_data,
-        pre_width_data, post_width_data, cvr_data, output_directory
+        pre_width_data, post_width_data, cvr_data, output_directory,0
     )
 
     # Output hierarchy
@@ -292,6 +299,10 @@ if __name__ == "__main__":
     print(f"mergeability2norm2: {mergeability2norm2_data[0][0]}")
     print(f"modularity: {modularity_data[0][0]}")
     print(f"degree: {degree_data[0][0]}")
-    print(f"community_size: {community_size_data[0][0]}")
+    avg_community_size = sum(map(int, community_size_data[1])) / len(community_size_data[1])
+    max_community_size = max(map(int, community_size_data[1]))
+    community_numbers = len(community_size_data[1])
+    print(f"average_community_size: {avg_community_size}")
+    print(f"max_community_size: {max_community_size}")
     print(f"cvr: {cvr_data[0][0]}")
     print(f"")
