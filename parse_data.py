@@ -12,7 +12,7 @@ def parse_out_xz(file_path):
     # Use regex to find each value in the file
     keys = ["n", "m", "mergeability1norm1", "mergeability1norm2",
             "mergeability2norm1", "mergeability2norm2", "modularity",
-            "degree", "community_size", "cvr"]
+            "degree", "max_community_size", "average_community_size", "cvr"]
     values = {}
     for key in keys:
         match = re.search(fr"{key}: ([\d\.\-e]+)", data)
@@ -38,7 +38,8 @@ def create_csv_from_out_xz(folder_path, output_csv):
     with open(output_csv, mode='w', newline='') as csv_file:
         fieldnames = ["filename", "n", "m", "mergeability1norm1", "mergeability1norm2",
                       "mergeability2norm1", "mergeability2norm2", "modularity",
-                      "degree", "community_size", "cvr", "mergetool_runtime"]
+                      "degree", "cvr", "mergetool_runtime",
+			"average_community_size", "max_community_size"]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
 
